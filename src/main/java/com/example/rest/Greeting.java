@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.rest;
 
 public class Greeting {
 

@@ -22,6 +22,10 @@ public class ClientController {
     public List<Client> getActiveClients(){
         return clientService.getAllActiveClients();
     }
+    @GetMapping("/clients/actives")
+    public List<Client> getActiveClientsS(){
+        return clientService.getAllActiveClients();
+    }
     @DeleteMapping("/clients/{id}")
     public void deleteClient(@PathVariable long id){
         clientService.deleteClientById(id);

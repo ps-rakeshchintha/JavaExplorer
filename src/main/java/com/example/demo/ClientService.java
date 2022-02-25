@@ -5,7 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ClientService {
@@ -33,5 +38,11 @@ public class ClientService {
         Client client = new Client(id, requestClient.getName(), requestClient.getActive(), dbClient.getCreatedDate(), new Date());
 
         return clientRepository.save(client);
+    }
+
+    public Map<Long, String> getIdAndName(){
+        List<ClientIdAndName> list = clientRepository.getIdAndName();
+        Map<Long, String> map = list.stream().collect(Collectors.toMap(p -> p.getId(), p -> p.getName()));
+        return  map;
     }
 }

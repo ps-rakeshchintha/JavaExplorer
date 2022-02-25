@@ -4,15 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ClientController {
-
     @Autowired
     private ClientService clientService;
     @GetMapping("/clients")
     public List<Client> getClients(){
         return clientService.getAllClients();
+    }
+    @GetMapping("/clientsni")
+    public Map<Long, String> getIdAndName(){
+        return clientService.getIdAndName();
     }
     @GetMapping("/clients/{id}")
     public Client getClientById(@PathVariable long id){

@@ -2,7 +2,9 @@ package com.example.demo;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -16,11 +18,13 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
     private Map<Long, String> clientIdAndNames;
+    private Map<Long, Boolean> clientIdAndActives;
     @PostConstruct
     private void postConstruct() {
         System.out.println("Called Post Construct");
-        List<ClientIdAndName> list = this.clientRepository.getIdAndName();
+        List<ClientIdAndName> list = this.clientRepository.getIdAndNameAndActive();
         this.clientIdAndNames = list.stream().collect(Collectors.toMap(ClientIdAndName::getId, ClientIdAndName::getName));
+        this.clientIdAndActives = list.stream().collect(Collectors.toMap(ClientIdAndName::getId, ClientIdAndName::getActive));
     }
 
     @Cacheable("getAllClients")
@@ -52,5 +56,8 @@ public class ClientService {
 
     public Map<Long, String> getIdAndName(){
         return  this.clientIdAndNames;
+    }
+    public Map<Long, Boolean> getIdAndActive(){
+        return  this.clientIdAndActives;
     }
 }

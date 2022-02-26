@@ -2,23 +2,33 @@ package com.example.demo;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
+    private Map<Long, String> clientIdAndNames;
+    @PostConstruct
+    private void postConstruct() {
+        System.out.println("Called Post Construct");
+        List<ClientIdAndName> list = this.clientRepository.getIdAndName();
+        this.clientIdAndNames = list.stream().collect(Collectors.toMap(p -> p.getId(), p -> p.getName()));
+    }
+
+    @Cacheable("getAllClients")
     public List<Client> getAllClients() {
+        System.out.println("Get all clients DB call");
         return clientRepository.findAll();
     }
+
     public List<Client> getAllActiveClients() {
         return clientRepository.findAllByActive(true);
     }
@@ -41,8 +51,6 @@ public class ClientService {
     }
 
     public Map<Long, String> getIdAndName(){
-        List<ClientIdAndName> list = clientRepository.getIdAndName();
-        Map<Long, String> map = list.stream().collect(Collectors.toMap(p -> p.getId(), p -> p.getName()));
-        return  map;
+        return  this.clientIdAndNames;
     }
 }

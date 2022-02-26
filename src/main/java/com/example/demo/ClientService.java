@@ -20,7 +20,7 @@ public class ClientService {
     private void postConstruct() {
         System.out.println("Called Post Construct");
         List<ClientIdAndName> list = this.clientRepository.getIdAndName();
-        this.clientIdAndNames = list.stream().collect(Collectors.toMap(p -> p.getId(), p -> p.getName()));
+        this.clientIdAndNames = list.stream().collect(Collectors.toMap(ClientIdAndName::getId, ClientIdAndName::getName));
     }
 
     @Cacheable("getAllClients")

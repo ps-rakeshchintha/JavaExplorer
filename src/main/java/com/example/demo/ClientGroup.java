@@ -1,16 +1,15 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer","handler"})
-public class Client {
+public class ClientGroup {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -19,19 +18,40 @@ public class Client {
     private Boolean active;
     private Date createdDate;
     private Date modifiedDate;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ClientGroup> clientGroups = new ArrayList<>();
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    protected Client() {}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Client(String name) {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    protected ClientGroup() {}
+
+    public ClientGroup(String name) {
         this.name = name;
         this.active = true;
         this.createdDate = new Date();
         this.modifiedDate = new Date();
     }
-    public Client(long id, String name, Boolean active, Date createdDate, Date modifiedDate) {
+    public ClientGroup(long id, String name, Boolean active, Date createdDate, Date modifiedDate) {
         this.id = id;
         this.name = name;
         this.active = active;

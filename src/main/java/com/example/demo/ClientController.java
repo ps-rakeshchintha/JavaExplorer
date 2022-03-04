@@ -15,18 +15,20 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
     @Autowired
+    private ClientGroupRepository cgr;
+    @Autowired
     CacheManager cacheManager;
 
     @PostConstruct
     private void postConstruct() {
         System.out.println("Called Controller Post Construct");
-        this.clientService.getAllClients();
+        //this.clientService.getAllClients();
     }
 
     @Scheduled(fixedRate = 6000)
     public void testCache() {
         System.out.println("Test Cache");
-        this.clientService.getAllClients();
+        //this.clientService.getAllClients();
     }
 
     @Scheduled(fixedRate = 60000)
@@ -34,7 +36,7 @@ public class ClientController {
         System.out.println("Clear Cache");
         cacheManager.getCache("getAllClients").clear();
         System.out.println("Get Clients Again");
-        this.clientService.getAllClients();
+        //this.clientService.getAllClients();
     }
 
     @GetMapping("/clients")
@@ -73,6 +75,10 @@ public class ClientController {
     @PutMapping("/clients/{id}")
     public Client updateClient(@RequestBody Client client, @PathVariable long id){
         return clientService.updateClient(client, id);
+    }
+    @GetMapping("/clients/{id}/client-groups")
+    public List<ClientGroup> getClientGroupsByClientId(@PathVariable long id){
+        return cgr.findAllByClientId(id);
     }
 
 }
